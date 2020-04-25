@@ -1,3 +1,7 @@
+# Generated folder
+**/.idea
+**/build
+
 # Prerequisites
 *.d
 
