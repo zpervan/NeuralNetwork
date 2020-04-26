@@ -1,8 +1,19 @@
 project(Libraries)
 
+add_library(NeuralNetworkBase
+        STATIC
+        neural_network_base.h
+        neural_network_base.cpp
+        )
+
 add_library(FeedForwardNetwork
+        STATIC
         feed_forward_network.h
         feed_forward_network.cpp
+        )
+
+target_link_libraries(NeuralNetworkBase
+        FeedForwardNetwork
         )
 
 ###### TESTING ######

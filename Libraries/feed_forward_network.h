@@ -1,8 +1,9 @@
 #ifndef NEURALNETWORK_SIMPLE_NEURAL_NETWORK_H
 #define NEURALNETWORK_SIMPLE_NEURAL_NETWORK_H
 
-class FeedForwardNetwork
-{
+#include "neural_network_base.h"
+
+class FeedForwardNetwork : public NeuralNetworkBase {
 public:
   void PrintHello();
 };
