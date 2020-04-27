@@ -2,6 +2,7 @@ project(Libraries)
 
 # Header only functionality
 add_library(ActivationFunctions
+        STATIC
         activation_functions.h
         )
 
