@@ -1,5 +1,16 @@
 project(Libraries)
 
+# Header only functionality
+add_library(ActivationFunctions
+        activation_functions.h
+        )
+
+set_target_properties(ActivationFunctions
+        PROPERTIES
+        LINKER_LANGUAGE CXX
+        )
+
+# Libraries
 add_library(NeuralNetworkBase
         STATIC
         neural_network_base.h
@@ -13,6 +24,7 @@ add_library(FeedForwardNetwork
         )
 
 target_link_libraries(NeuralNetworkBase
+        ActivationFunctions
         FeedForwardNetwork
         )
 
@@ -27,11 +39,20 @@ set(GTest_Libs
         )
 
 # Add test executables
+add_executable(ActivationFunctionsTest
+        Test/activation_functions_test.cpp
+        )
+
 add_executable(FeedForwardNetworkTest
         Test/feed_forward_network_test.cpp
         )
 
 # Link libraries needed for testing
+
+target_link_libraries(ActivationFunctionsTest
+        ActivationFunctions
+        ${GTest_Libs}
+        )
 
 target_link_libraries(FeedForwardNetworkTest
         FeedForwardNetwork
@@ -40,5 +61,6 @@ target_link_libraries(FeedForwardNetworkTest
 
 # Create a test suite
 add_test(TestAll
+        ActivationFunctionsTest
         FeedForwardNetworkTest
         )
