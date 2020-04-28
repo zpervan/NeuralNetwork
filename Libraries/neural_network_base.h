@@ -24,28 +24,30 @@ using Weight = double;
 /// @brief Base class for defining the neural network architecture
 class NeuralNetworkBase {
 public:
+
+
+  void AddInputValues(const std::vector<Value>&input_values);
+
+  void ConnectNeurons();
+
+protected:
   /// @brief Defines the numbers of neurons in the input layer
   /// @param size Value representing how many neurons will the input layer have
-  void SetSizeOfInputLayer(std::size_t size);
+  void SetNumberOfNeuronsInInputLayer(std::size_t size);
 
   /// @brief Defines the numbers of neurons in the single hidden layer
   /// @param size Value representing how many neurons will the hidden layer have
-  void SetSizeOfSingleHiddenLayer(std::size_t size);
+  void SetNumberOfNeuronsInSingleHiddenLayer(std::size_t size);
 
   /// @brief Defines the numbers of neurons in the output layer
   /// @param size Value representing how many neurons will the output layer have
   void SetSizeOfOutputLayer(std::size_t size);
 
-  void AddInputValues(const std::vector<Value>& values);
-
-  void ConnectNeurons();
-
-protected:
   std::vector<Neuron> input_layer_{};
   std::vector<Neuron> hidden_layer_{};
   std::vector<Neuron> output_layer_{};
   std::vector<Weight> weights_{};
-  std::map<NeuronRelation, Weight> neuron_relations_;
+  std::map<NeuronRelation, Weight> synapse_;
 };
 
 } // namespace Base
