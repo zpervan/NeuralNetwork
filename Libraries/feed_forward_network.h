@@ -3,7 +3,7 @@
 
 #include "neural_network_base.h"
 
-class FeedForwardNetwork : public NeuralNetworkBase {
+class FeedForwardNetwork : public Base::NeuralNetworkBase {
 public:
   void PrintHello();
 };

@@ -17,4 +17,4 @@ script:
   - cmake ..
   - cmake --build . -- -j2
   - cd Libraries
-  - ./FeedForwardNetworkTest
+  - ./ActivationFunctionTest && ./FeedForwardNetworkTest && ./NeuralNetworkBaseTest
