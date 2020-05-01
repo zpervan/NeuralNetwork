@@ -1,6 +1,9 @@
 #ifndef NEURALNETWORK_NEURAL_NETWORK_BASE_H
 #define NEURALNETWORK_NEURAL_NETWORK_BASE_H
 
+#include "Base/neuron.h"
+#include "Base/synapse.h"
+
 #include <cstddef>
 #include <map>
 #include <memory>
@@ -10,23 +13,14 @@
 // TODO: Create a single function for defining the layers size
 namespace Base {
 
-/// @brief Defines one neuron
-struct Neuron {
-  std::unique_ptr<Neuron> parent;
-  std::unique_ptr<Neuron> child;
-  double value;
-};
-
-using NeuronRelation = std::pair<Neuron, Neuron>;
+// using NeuronRelation = std::pair<Neuron, Neuron>;
 using Value = double;
 using Weight = double;
 
 /// @brief Base class for defining the neural network architecture
 class NeuralNetworkBase {
 public:
-
-
-  void AddInputValues(const std::vector<Value>&input_values);
+  void AddInputValues(const std::vector<Value> &input_values);
 
   void ConnectNeurons();
 
@@ -47,7 +41,7 @@ protected:
   std::vector<Neuron> hidden_layer_{};
   std::vector<Neuron> output_layer_{};
   std::vector<Weight> weights_{};
-  std::map<NeuronRelation, Weight> synapse_;
+  //  std::map<NeuronRelation, Weight> synapse_;
 };
 
 } // namespace Base

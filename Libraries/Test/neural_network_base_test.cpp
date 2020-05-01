@@ -1,5 +1,7 @@
 #include "../neural_network_base.h"
 
+#include <memory>
+
 #include "gtest/gtest.h"
 namespace Base {
 class NeuralNetworkBaseTestFixture : protected Base::NeuralNetworkBase,
@@ -28,6 +30,18 @@ TEST_F(
   ASSERT_THROW(SetNumberOfNeuronsInInputLayer(invalid_size),
                std::invalid_argument);
 }
+
+//TEST_F(NeuralNetworkBaseTestFixture,
+//       GivenTwoNeurons_WhenCreating_ThenNeuronsAreLinked) {
+//
+//  std::unique_ptr<Neuron> parent_neuron{new Neuron{2}};
+//  std::unique_ptr<Neuron> child_neuron{new Neuron{1}};
+//
+//  Synapse synapse{parent_neuron.get(), child_neuron.get(), 0};
+//
+//  EXPECT_EQ(true, *synapse.parent);
+//  EXPECT_EQ(true, *synapse.child);
+//}
 
 } // namespace Base
 

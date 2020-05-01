@@ -1,5 +1,7 @@
 project(Libraries)
 
+add_subdirectory(Base)
+
 # Header only libraries
 add_library(ActivationFunctions
         STATIC
@@ -27,6 +29,7 @@ add_library(NeuralNetworkBase
 target_link_libraries(NeuralNetworkBase
         ActivationFunctions
         FeedForwardNetwork
+        NeuralNetworkComponents
         )
 
 ###### TESTING ######
