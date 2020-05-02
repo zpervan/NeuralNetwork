@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "gtest/gtest.h"
+
 namespace Base {
 class NeuralNetworkBaseTestFixture : protected Base::NeuralNetworkBase,
                                      public ::testing::Test {
@@ -55,15 +56,35 @@ TEST_F(
   EXPECT_EQ(expected_value[1], synapse->GetChildNeuron()->GetValue());
 }
 
-TEST_F(
-    NeuralNetworkBaseTestFixture,
-    GivenInputValues_WhenSettingNumberOfNeuronsInInputLayer_ThenCorrectSizeIsSet) {
+TEST_F(NeuralNetworkBaseTestFixture,
+       GivenInputValues_WhenSettingArchitecture_ThenCorrectSizesAreSet) {
 
   const std::size_t expected_size{4};
+  const std::size_t layer_size = default_input_values.size();
 
-  SetNumberOfNeuronsInInputLayer(default_input_values.size());
-
+  SetNumberOfNeuronsInInputLayer(layer_size);
   ASSERT_EQ(expected_size, input_layer_.capacity());
+
+  SetNumberOfNeuronsInSingleHiddenLayer(layer_size);
+  ASSERT_EQ(expected_size, hidden_layer_.capacity());
+
+  SetNumberOfNeuronsInOutputLayer(layer_size);
+  ASSERT_EQ(expected_size, output_layer_.capacity());
+}
+
+TEST_F(NeuralNetworkBaseTestFixture,
+       GivenInvalidLayerSizes_WhenSettingArchitecture_ThenExceptionsAreThrown) {
+
+  const std::size_t invalid_size{0};
+
+  EXPECT_THROW(SetNumberOfNeuronsInInputLayer(invalid_size),
+               std::invalid_argument);
+
+  EXPECT_THROW(SetNumberOfNeuronsInSingleHiddenLayer(invalid_size),
+               std::invalid_argument);
+
+  EXPECT_THROW(SetNumberOfNeuronsInOutputLayer(invalid_size),
+               std::invalid_argument);
 }
 
 TEST_F(
@@ -75,8 +96,6 @@ TEST_F(
   ASSERT_THROW(SetNumberOfNeuronsInInputLayer(invalid_size),
                std::invalid_argument);
 }
-
-
 
 } // namespace Base
 
