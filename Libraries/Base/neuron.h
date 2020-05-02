@@ -1,6 +1,8 @@
 #ifndef NEURALNETWORK_NEURON_H
 #define NEURALNETWORK_NEURON_H
 
+using Value = double;
+
 /// @brief Defines one neuron
 class Neuron {
 public:
