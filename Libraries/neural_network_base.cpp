@@ -2,14 +2,13 @@
 
 #include <algorithm>
 
-namespace Base {
-
 void NeuralNetworkBase::AssignInputValues(
     const std::vector<Value> &input_values) {
+
   SetNumberOfNeuronsInInputLayer(input_values.size());
 
   for (auto &value : input_values) {
-    //        input_layer_.emplace_back(Neuron{nullptr, nullptr, value});
+    input_layer_.emplace_back(Neuron(value));
   }
 }
 
@@ -31,4 +30,4 @@ void NeuralNetworkBase::SetNumberOfNeuronsInOutputLayer(size_t size) {
 }
 
 void NeuralNetworkBase::ConnectNeurons() {}
-} // namespace Base
+

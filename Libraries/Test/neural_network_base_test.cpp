@@ -4,11 +4,10 @@
 
 #include "gtest/gtest.h"
 
-namespace Base {
-class NeuralNetworkBaseTestFixture : protected Base::NeuralNetworkBase,
+class NeuralNetworkBaseTestFixture : protected NeuralNetworkBase,
                                      public ::testing::Test {
 protected:
-  const std::array<Value, 4> default_input_values{{3, 2, 1, 0}};
+  const std::vector<Value> default_input_values{3.0, 2.0, 1.0, 0.0};
   const std::array<Value, 2> default_values{{1.0, 2.0}};
 };
 
@@ -33,7 +32,7 @@ TEST_F(NeuralNetworkBaseTestFixture,
 
 TEST_F(
     NeuralNetworkBaseTestFixture,
-    GivenSynapseWithParentAndChildNeuron_WhenResettingSynapse_ThenExistingNeuronsAreUnchanged) {
+    GivenSynapseWithParentAndChildNeuron_WhenResettingSynapse_ThenCurrentSynapseUnchanged) {
 
   const std::array<Neuron *, 2> neurons{new Neuron(default_values[0]),
                                         new Neuron(default_values[1])};
@@ -57,7 +56,7 @@ TEST_F(
 }
 
 TEST_F(NeuralNetworkBaseTestFixture,
-       GivenInputValues_WhenSettingArchitecture_ThenCorrectSizesAreSet) {
+       GivenValidInputValues_WhenSettingLayersSize_ThenCorrectSizeIsSet) {
 
   const std::size_t expected_size{4};
   const std::size_t layer_size = default_input_values.size();
@@ -73,7 +72,7 @@ TEST_F(NeuralNetworkBaseTestFixture,
 }
 
 TEST_F(NeuralNetworkBaseTestFixture,
-       GivenInvalidLayerSizes_WhenSettingArchitecture_ThenExceptionsAreThrown) {
+       GivenInvalidInputSize_WhenSettingLayersSize_ThenExceptionsAreThrown) {
 
   const std::size_t invalid_size{0};
 
@@ -89,15 +88,19 @@ TEST_F(NeuralNetworkBaseTestFixture,
 
 TEST_F(
     NeuralNetworkBaseTestFixture,
-    GivenEmptyInputValues_WhenSettingNumberOfNeuronsInInputLayer_ThenExceptionIsThrown) {
+    GivenValidInputValues_WhenAssigningValuesToInputLayer_ThenCorrectValuesAssigned) {
 
-  const std::size_t invalid_size{0};
+  AssignInputValues(default_input_values);
 
-  ASSERT_THROW(SetNumberOfNeuronsInInputLayer(invalid_size),
-               std::invalid_argument);
+  const std::size_t expected_size{4};
+
+  ASSERT_EQ(expected_size, input_layer_.size());
 }
 
-} // namespace Base
+TEST_F(NeuralNetworkBaseTestFixture,
+       GivenDefinedArchitecture_WhenSettingWeights_ThenRandomWeightsAreSet) {
+  ASSERT_TRUE(false);
+}
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);

@@ -11,8 +11,6 @@
 
 // TODO: Better function names, like "SetNumberOfElementsInInputLayers"
 // TODO: Create a single function for defining the layers size
-namespace Base {
-
 /// @brief Base class for defining the neural network architecture
 class NeuralNetworkBase {
 public:
@@ -39,7 +37,7 @@ protected:
   std::vector<Neuron> input_layer_{};
   std::vector<Neuron> hidden_layer_{};
   std::vector<Neuron> output_layer_{};
+  std::vector<Synapse> synapses_{};
 };
 
-} // namespace Base
 #endif // NEURALNETWORK_NEURAL_NETWORK_BASE_H
