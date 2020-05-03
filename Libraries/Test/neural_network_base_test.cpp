@@ -9,6 +9,23 @@ class NeuralNetworkBaseTestFixture : protected NeuralNetworkBase,
 protected:
   const std::vector<Value> default_input_values{3.0, 2.0, 1.0, 0.0};
   const std::array<Value, 2> default_values{{1.0, 2.0}};
+
+  void CreateLayersWithDefaultSize() {
+    // Input layer size will be defined in input value assignment
+    SetNumberOfNeuronsInInputLayer(default_input_values.size());
+
+    ASSERT_EQ(default_input_values.size(), input_layer_.capacity());
+
+    const std::size_t hidden_layer_size{5};
+    SetNumberOfNeuronsInSingleHiddenLayer(hidden_layer_size);
+
+    ASSERT_EQ(hidden_layer_size, hidden_layer_.capacity());
+
+    const std::size_t output_layer_size{2};
+    SetNumberOfNeuronsInOutputLayer(output_layer_size);
+
+    ASSERT_EQ(output_layer_size, output_layer_.capacity());
+  }
 };
 
 TEST_F(NeuralNetworkBaseTestFixture,
@@ -89,17 +106,54 @@ TEST_F(NeuralNetworkBaseTestFixture,
 TEST_F(
     NeuralNetworkBaseTestFixture,
     GivenValidInputValues_WhenAssigningValuesToInputLayer_ThenCorrectValuesAssigned) {
-
-  AssignInputValues(default_input_values);
+  SetNumberOfNeuronsInInputLayer(default_input_values.size());
 
   const std::size_t expected_size{4};
 
+  ASSERT_EQ(expected_size, input_layer_.capacity());
+
+  SetInputValues(default_input_values);
+
   ASSERT_EQ(expected_size, input_layer_.size());
+
+  for (std::size_t i = 0; i < expected_size; i++) {
+    EXPECT_EQ(default_input_values[i], input_layer_[i].GetValue());
+  }
+}
+
+TEST_F(
+    NeuralNetworkBaseTestFixture,
+    GivenDefinedLayersSize_WhenReservingSyanpseCapacity_ThenSynapseCapacityIsCorrect) {
+
+  CreateLayersWithDefaultSize();
+  ReserveSynapseCapacity();
+
+  const std::size_t expected_synapse_size{30};
+
+  ASSERT_EQ(expected_synapse_size, synapses_.capacity());
 }
 
 TEST_F(NeuralNetworkBaseTestFixture,
-       GivenDefinedArchitecture_WhenSettingWeights_ThenRandomWeightsAreSet) {
-  ASSERT_TRUE(false);
+       GivenDefinedLayersSize_WhenConnectingLayers_ThenLayersAreConnected) {
+
+  CreateLayersWithDefaultSize();
+  ReserveSynapseCapacity();
+
+  SetInputValues(default_input_values);
+  AssignRandomValuesToLayer(hidden_layer_);
+
+  ConnectLayers(input_layer_, hidden_layer_);
+
+  const std::size_t expected_input_hidden_layer_synapse_size{20};
+
+  ASSERT_EQ(expected_input_hidden_layer_synapse_size, synapses_.size());
+
+  AssignRandomValuesToLayer(output_layer_);
+  ConnectLayers(hidden_layer_, output_layer_);
+
+  const std::size_t expected_synapse_size{30};
+
+  ASSERT_EQ(expected_synapse_size, synapses_.size());
 }
 
 int main(int argc, char **argv) {
