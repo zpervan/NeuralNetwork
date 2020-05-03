@@ -26,31 +26,33 @@ public:
   /// @param size Value representing how many neurons will the output layer have
   void SetNumberOfNeuronsInOutputLayer(std::size_t size);
 
-  /// @brief
+  /// @brief Assign values to neurons in the input layer
   void SetInputValues(std::vector<Value> input_values);
 
-  /// @brief
-  void CreateArchitecture();
+  /// @brief Creates the whole neural network with defined layers, synapses and
+  /// values assigned to them.
+  void CreateNetwork();
 
 protected:
-  /// @brief
+  /// @brief Reserve container space for synapse connections
   void ReserveSynapseCapacity();
 
-  /// @brief
-  /// @param input_values
-  void AssignRandomValuesToLayer(std::vector<Neuron> &inputs);
+  /// @brief Assign initial random values to the passed layer
+  /// @param layer Layer to which the values will be assigned
+  void AssignRandomValuesToLayer(std::vector<Neuron> &layer);
 
-  /// @brief
-  /// @param lhs
-  /// @param rhs
-  void ConnectLayers(const std::vector<Neuron> &lhs,
-                     const std::vector<Neuron> &rhs);
+  /// @brief Defines the parent-child relationship which is connected with a
+  /// synapse. Each synapse has its own weight.
+  /// @param parent Parent neuron
+  /// @param child Child neuron
+  void ConnectLayers(const std::vector<Neuron> &parent,
+                     const std::vector<Neuron> &child);
 
-  /// @brief
+  // Helper functions
   inline double GenerateRandomValue();
-
-  /// @brief
   void IsLayersSizeAndCapacitySame();
+
+  // Data members
   std::random_device random_device_;
   std::default_random_engine generator_{random_device_()};
 

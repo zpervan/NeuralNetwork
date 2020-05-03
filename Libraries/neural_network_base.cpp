@@ -35,7 +35,7 @@ void NeuralNetworkBase::SetInputValues(std::vector<Value> input_values) {
   }
 }
 
-void NeuralNetworkBase::CreateArchitecture() {
+void NeuralNetworkBase::CreateNetwork() {
 
   IsLayersSizeAndCapacitySame();
   ReserveSynapseCapacity();
@@ -48,13 +48,13 @@ void NeuralNetworkBase::CreateArchitecture() {
   ConnectLayers(hidden_layer_, output_layer_);
 }
 
-void NeuralNetworkBase::ConnectLayers(const std::vector<Neuron> &lhs,
-                                      const std::vector<Neuron> &rhs) {
-  for (std::size_t i = 0; i < lhs.capacity(); i++) {
-    for (std::size_t j = 0; j < rhs.capacity(); j++) {
+void NeuralNetworkBase::ConnectLayers(const std::vector<Neuron> &parent,
+                                      const std::vector<Neuron> &child) {
+  for (std::size_t i = 0; i < parent.capacity(); i++) {
+    for (std::size_t j = 0; j < child.capacity(); j++) {
       Synapse synapse;
-      synapse.SetParentNeuron(&lhs.at(i));
-      synapse.SetChildNeuron(&rhs.at(j));
+      synapse.SetParentNeuron(&parent.at(i));
+      synapse.SetChildNeuron(&child.at(j));
       synapse.SetWeight(GenerateRandomValue());
 
       synapses_.emplace_back(synapse);
@@ -72,9 +72,9 @@ void NeuralNetworkBase::ReserveSynapseCapacity() {
   synapses_.reserve(input_hidden_synapse_size + hidden_output_synapse_size);
 }
 
-void NeuralNetworkBase::AssignRandomValuesToLayer(std::vector<Neuron> &inputs) {
-  for (std::size_t i = 0; i < inputs.capacity(); i++) {
-    inputs.emplace_back(Neuron{GenerateRandomValue()});
+void NeuralNetworkBase::AssignRandomValuesToLayer(std::vector<Neuron> &layer) {
+  for (std::size_t i = 0; i < layer.capacity(); i++) {
+    layer.emplace_back(Neuron{GenerateRandomValue()});
   }
 }
 
