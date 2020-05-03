@@ -11,7 +11,6 @@ protected:
   const std::array<Value, 2> default_values{{1.0, 2.0}};
 
   void CreateLayersWithDefaultSize() {
-    // Input layer size will be defined in input value assignment
     SetNumberOfNeuronsInInputLayer(default_input_values.size());
 
     ASSERT_EQ(default_input_values.size(), input_layer_.capacity());
@@ -154,6 +153,46 @@ TEST_F(NeuralNetworkBaseTestFixture,
   const std::size_t expected_synapse_size{30};
 
   ASSERT_EQ(expected_synapse_size, synapses_.size());
+}
+
+TEST_F(
+    NeuralNetworkBaseTestFixture,
+    GivenInputValues_WhenArchitectureIsDefined_ThenNetworkIsSucessfulyCreated) {
+  const std::size_t neurons_in_input_layer{2};
+  SetNumberOfNeuronsInInputLayer(neurons_in_input_layer);
+
+  const std::size_t neurons_in_hidden_layer{3};
+  SetNumberOfNeuronsInSingleHiddenLayer(neurons_in_hidden_layer);
+
+  const std::size_t neurons_in_output_layer{1};
+  SetNumberOfNeuronsInOutputLayer(neurons_in_output_layer);
+
+  const std::vector<Value> input_values{1.0, 0.0};
+  CreateNetwork(input_values);
+
+  const std::size_t expected_synapses_size{9};
+  ASSERT_EQ(expected_synapses_size, synapses_.size());
+
+  const std::array<Value, 2> expected_values{1.0, 0.0};
+  // Values in the hidden and output layer are random so we compare that they
+  // are not equal to zero (invalid value)
+  const Value invalid_value{0.0};
+  const Weight invalid_weight{0.0};
+
+  EXPECT_EQ(expected_values[0], synapses_[1].GetParentNeuron()->GetValue());
+  EXPECT_NE(invalid_value, synapses_[1].GetChildNeuron()->GetValue());
+
+  EXPECT_EQ(expected_values[1], synapses_[3].GetParentNeuron()->GetValue());
+  EXPECT_NE(invalid_value, synapses_[3].GetChildNeuron()->GetValue());
+
+  EXPECT_EQ(expected_values[1], synapses_[5].GetParentNeuron()->GetValue());
+  EXPECT_NE(invalid_value, synapses_[5].GetChildNeuron()->GetValue());
+
+  EXPECT_NE(invalid_value, synapses_[7].GetParentNeuron()->GetValue());
+  EXPECT_NE(invalid_value, synapses_[7].GetChildNeuron()->GetValue());
+
+  EXPECT_NE(invalid_weight, synapses_[3].GetWeight());
+  EXPECT_NE(invalid_weight, synapses_[7].GetWeight());
 }
 
 int main(int argc, char **argv) {

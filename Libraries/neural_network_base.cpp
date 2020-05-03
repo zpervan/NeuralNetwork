@@ -28,20 +28,22 @@ void NeuralNetworkBase::SetNumberOfNeuronsInOutputLayer(size_t size) {
            : throw std::invalid_argument("Size of output layer is not valid!");
 }
 
-void NeuralNetworkBase::SetInputValues(std::vector<Value> input_values) {
+void NeuralNetworkBase::SetInputValues(const std::vector<Value> &input_values) {
 
   for (auto &value : input_values) {
     input_layer_.emplace_back(Neuron{value});
   }
 }
 
-void NeuralNetworkBase::CreateNetwork() {
+void NeuralNetworkBase::CreateNetwork(const std::vector<double> &input_values) {
 
-  IsLayersSizeAndCapacitySame();
   ReserveSynapseCapacity();
 
+  SetInputValues(input_values);
   AssignRandomValuesToLayer(hidden_layer_);
   AssignRandomValuesToLayer(output_layer_);
+
+  AreLayersSizeAndCapacitySame();
 
   // TODO: Generalize layer connection
   ConnectLayers(input_layer_, hidden_layer_);
@@ -82,16 +84,19 @@ inline double NeuralNetworkBase::GenerateRandomValue() {
   return distribution_(generator_);
 }
 
-void NeuralNetworkBase::IsLayersSizeAndCapacitySame() {
+void NeuralNetworkBase::AreLayersSizeAndCapacitySame() {
   if (!IsVectorCapacitySameAsVectorSize(input_layer_)) {
-    throw std::invalid_argument("Input layer size and capacity do not match!");
+    throw std::invalid_argument(
+        "Input layer capacity and elements size do not match!");
   }
 
   if (!IsVectorCapacitySameAsVectorSize(hidden_layer_)) {
-    throw std::invalid_argument("Hidden layer size and capacity do not match!");
+    throw std::invalid_argument(
+        "Hidden layer capacity and elements size do not match!");
   }
 
   if (!IsVectorCapacitySameAsVectorSize(output_layer_)) {
-    throw std::invalid_argument("Output layer size and capacity do not match!");
+    throw std::invalid_argument(
+        "Output layer capacity and elements size do not match!");
   }
 }

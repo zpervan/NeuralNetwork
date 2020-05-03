@@ -4,14 +4,13 @@
 #include "Base/neuron.h"
 #include "Base/synapse.h"
 
-#include <cstddef>
-#include <memory>
 #include <random>
 #include <vector>
 
 // TODO: Create a single function for defining the layers size
 
 /// @brief Base class for defining the neural network architecture
+/// @attention Currently, works only with a single hidden layer architecture
 class NeuralNetworkBase {
 public:
   /// @brief Defines the numbers of neurons in the input layer
@@ -26,14 +25,16 @@ public:
   /// @param size Value representing how many neurons will the output layer have
   void SetNumberOfNeuronsInOutputLayer(std::size_t size);
 
-  /// @brief Assign values to neurons in the input layer
-  void SetInputValues(std::vector<Value> input_values);
-
   /// @brief Creates the whole neural network with defined layers, synapses and
   /// values assigned to them.
-  void CreateNetwork();
+  /// @param input_values Values assigned to the input layer neurons
+  void CreateNetwork(const std::vector<double> &input_values);
 
 protected:
+  /// @brief Assign values to neurons in the input layer
+  /// @param input_values Input values which will be assigned to the input layer
+  void SetInputValues(const std::vector<Value> &input_values);
+
   /// @brief Reserve container space for synapse connections
   void ReserveSynapseCapacity();
 
@@ -50,7 +51,7 @@ protected:
 
   // Helper functions
   inline double GenerateRandomValue();
-  void IsLayersSizeAndCapacitySame();
+  void AreLayersSizeAndCapacitySame();
 
   // Data members
   std::random_device random_device_;
