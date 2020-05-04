@@ -1,23 +1,23 @@
 #ifndef NEURALNETWORK_NEURON_H
 #define NEURALNETWORK_NEURON_H
 
-using Value = double;
+#include "neural_network_architecture_data.h"
 
 /// @brief Defines one neuron
 class Neuron {
 public:
-  explicit Neuron(const double value) : value_(value){};
+  explicit Neuron(const Id id, const double value) : id_(id), value_(value){};
+
+  Id GetId() const;
   double GetValue() const;
+
   void SetValue(const double &value);
 
   Neuron() = default;
-  Neuron(Neuron &neuron) = delete;
-  Neuron(Neuron &&neuron) = default;
-  Neuron &operator=(const Neuron &neuron) = delete;
-  Neuron &operator=(Neuron &&neuron) = default;
   ~Neuron() = default;
 
 private:
+  const Id id_;
   double value_;
 };
 

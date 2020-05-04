@@ -26,9 +26,6 @@ private:
   const Neuron *parent_{nullptr};
   const Neuron *child_{nullptr};
   double weight_{0.0};
-
-public:
-  double getWeight() const;
 };
 
 #endif // NEURALNETWORK_SYNAPSE_H

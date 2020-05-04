@@ -14,12 +14,6 @@ set_target_properties(ActivationFunctions
         )
 
 # Libraries
-add_library(FeedForwardNetwork
-        STATIC
-        feed_forward_network.h
-        feed_forward_network.cpp
-        )
-
 add_library(NeuralNetworkBase
         STATIC
         neural_network_base.h
@@ -27,9 +21,21 @@ add_library(NeuralNetworkBase
         )
 
 target_link_libraries(NeuralNetworkBase
+        PRIVATE
         ActivationFunctions
         FeedForwardNetwork
         NeuralNetworkComponents
+        )
+
+add_library(FeedForwardNetwork
+        STATIC
+        feed_forward_network.h
+        feed_forward_network.cpp
+        )
+
+target_link_libraries(FeedForwardNetwork
+        PRIVATE
+        NeuralNetworkBase
         )
 
 ###### TESTING ######

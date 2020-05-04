@@ -1,6 +1,8 @@
 #include "neural_network_base.h"
 
 #include <algorithm>
+#include <exception>
+#include <iostream>
 
 namespace {
 
@@ -29,9 +31,9 @@ void NeuralNetworkBase::SetNumberOfNeuronsInOutputLayer(size_t size) {
 }
 
 void NeuralNetworkBase::SetInputValues(const std::vector<Value> &input_values) {
-
   for (auto &value : input_values) {
-    input_layer_.emplace_back(Neuron{value});
+    input_layer_.emplace_back(Neuron{neuron_id_, value});
+    neuron_id_++;
   }
 }
 
@@ -52,6 +54,7 @@ void NeuralNetworkBase::CreateNetwork(const std::vector<double> &input_values) {
 
 void NeuralNetworkBase::ConnectLayers(const std::vector<Neuron> &parent,
                                       const std::vector<Neuron> &child) {
+
   for (std::size_t i = 0; i < parent.capacity(); i++) {
     for (std::size_t j = 0; j < child.capacity(); j++) {
       Synapse synapse;
@@ -59,7 +62,7 @@ void NeuralNetworkBase::ConnectLayers(const std::vector<Neuron> &parent,
       synapse.SetChildNeuron(&child.at(j));
       synapse.SetWeight(GenerateRandomValue());
 
-      synapses_.emplace_back(synapse);
+      synapses_.emplace(synapse.GetParentNeuron()->GetId(), synapse);
     }
   }
 }
@@ -76,7 +79,8 @@ void NeuralNetworkBase::ReserveSynapseCapacity() {
 
 void NeuralNetworkBase::AssignRandomValuesToLayer(std::vector<Neuron> &layer) {
   for (std::size_t i = 0; i < layer.capacity(); i++) {
-    layer.emplace_back(Neuron{GenerateRandomValue()});
+    layer.emplace_back(Neuron{neuron_id_, GenerateRandomValue()});
+    neuron_id_++;
   }
 }
 
@@ -99,4 +103,13 @@ void NeuralNetworkBase::AreLayersSizeAndCapacitySame() {
     throw std::invalid_argument(
         "Output layer capacity and elements size do not match!");
   }
+}
+
+std::unordered_multimap<Id, Synapse> NeuralNetworkBase::GetSynapses() const {
+  if (synapses_.empty()) {
+    std::cerr << "Synapses are not yet defined!\n";
+    return {};
+  }
+
+  return synapses_;
 }

@@ -1,11 +1,21 @@
 #ifndef NEURALNETWORK_SIMPLE_NEURAL_NETWORK_H
 #define NEURALNETWORK_SIMPLE_NEURAL_NETWORK_H
 
-//#include "neural_network_base.h"
+#include "Base/neural_network_architecture_data.h"
+#include "neural_network_base.h"
 
-class FeedForwardNetwork{
+class FeedForwardNetwork : public NeuralNetworkBase {
 public:
-  void PrintHello();
+  /// @brief Define a neural network architecture with given layer sizes and
+  /// input values.
+  /// @param network Defines the size of the network layers
+  /// @param input_values Values which will be assigned to the input layer
+  /// neurons
+  void DefineNeuralNetworkArchitecture(NeuralNetworkArchitecture network,
+                                       const std::vector<Value> &input_values);
+
+  /// @brief
+  void TrainOnce();
 };
 
 #endif // NEURALNETWORK_SIMPLE_NEURAL_NETWORK_H
