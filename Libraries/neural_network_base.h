@@ -5,8 +5,8 @@
 #include "Base/neuron.h"
 #include "Base/synapse.h"
 
+#include <map>
 #include <random>
-#include <unordered_map>
 #include <vector>
 
 /// @brief Base class for defining the neural network architecture
@@ -32,7 +32,7 @@ public:
 
   /// @brief Gets the synapses
   /// @return Vector of filled synapses
-  std::unordered_multimap<Id, Synapse> GetSynapses() const;
+  std::multimap<Id, Synapse> GetSynapses() const;
 
 protected:
   /// @brief Assign values to neurons in the input layer
@@ -44,7 +44,7 @@ protected:
 
   /// @brief Assign initial random values to the passed layer
   /// @param layer Layer to which the values will be assigned
-  void AssignRandomValuesToLayer(std::vector<Neuron> &layer);
+  void AddNeuronToLayer(std::vector<Neuron> &layer);
 
   /// @brief Defines the parent-child relationship which is connected with a
   /// synapse. Each synapse has its own weight.
@@ -57,16 +57,16 @@ protected:
   inline double GenerateRandomValue();
   void AreLayersSizeAndCapacitySame();
 
-  // TODO: Add seed to output same random number sequence (for testability)
+  // Random generator
   std::random_device random_device_;
   std::default_random_engine generator_{random_device_()};
   std::uniform_real_distribution<double> distribution_{0.0, 1.0};
 
   // Data members
+  std::multimap<Id, Synapse> synapses_{};
   std::vector<Neuron> input_layer_{};
   std::vector<Neuron> hidden_layer_{};
   std::vector<Neuron> output_layer_{};
-  std::unordered_multimap<Id, Synapse> synapses_{};
 
   Id neuron_id_{0};
 };

@@ -1,6 +1,6 @@
 #include "../neural_network_base.h"
 
-#include <memory>
+#include <iterator>
 
 #include "gtest/gtest.h"
 
@@ -12,7 +12,9 @@ protected:
       {{0, 1.0}, {1, 2.0}}};
 
   void CreateLayersWithDefaultSize() {
-    SetNumberOfNeuronsInInputLayer(default_input_values.size());
+
+    const std::size_t input_layer_size{4};
+    SetNumberOfNeuronsInInputLayer(input_layer_size);
 
     ASSERT_EQ(default_input_values.size(), input_layer_.capacity());
 
@@ -25,6 +27,15 @@ protected:
     SetNumberOfNeuronsInOutputLayer(output_layer_size);
 
     ASSERT_EQ(output_layer_size, output_layer_.capacity());
+  }
+
+  void CheckNeuronConnectionSize(const std::size_t id,
+                                 const std::size_t expected_size) {
+    auto actual_synapse_values_pair = synapses_.equal_range(id);
+    const std::size_t actual_size = std::distance(
+        actual_synapse_values_pair.first, actual_synapse_values_pair.second);
+
+    EXPECT_EQ(expected_size, actual_size) << "ID: " << id;
   }
 };
 
@@ -128,7 +139,6 @@ TEST_F(
     GivenDefinedLayersSize_WhenReservingSyanpseCapacity_ThenSynapseCapacityIsCorrect) {
 
   CreateLayersWithDefaultSize();
-  ReserveSynapseCapacity();
 
   const std::size_t actual_synapse_capacity =
       (input_layer_.capacity() * hidden_layer_.capacity()) +
@@ -143,10 +153,9 @@ TEST_F(NeuralNetworkBaseTestFixture,
        GivenDefinedLayersSize_WhenConnectingLayers_ThenLayersAreConnected) {
 
   CreateLayersWithDefaultSize();
-  ReserveSynapseCapacity();
 
   SetInputValues(default_input_values);
-  AssignRandomValuesToLayer(hidden_layer_);
+  AddNeuronToLayer(hidden_layer_);
 
   ConnectLayers(input_layer_, hidden_layer_);
 
@@ -154,7 +163,7 @@ TEST_F(NeuralNetworkBaseTestFixture,
 
   ASSERT_EQ(expected_input_hidden_layer_synapse_size, synapses_.size());
 
-  AssignRandomValuesToLayer(output_layer_);
+  AddNeuronToLayer(output_layer_);
   ConnectLayers(hidden_layer_, output_layer_);
 
   const std::size_t expected_synapse_size{30};
@@ -162,46 +171,32 @@ TEST_F(NeuralNetworkBaseTestFixture,
   ASSERT_EQ(expected_synapse_size, synapses_.size());
 }
 
-// @TODO: Adapt test to use map function calls
 TEST_F(
     NeuralNetworkBaseTestFixture,
     GivenInputValues_WhenArchitectureIsDefined_ThenNetworkIsSucessfulyCreated) {
-  const std::size_t neurons_in_input_layer{2};
-  SetNumberOfNeuronsInInputLayer(neurons_in_input_layer);
 
-  const std::size_t neurons_in_hidden_layer{3};
-  SetNumberOfNeuronsInSingleHiddenLayer(neurons_in_hidden_layer);
+  CreateLayersWithDefaultSize();
+  CreateNetwork(default_input_values);
 
-  const std::size_t neurons_in_output_layer{1};
-  SetNumberOfNeuronsInOutputLayer(neurons_in_output_layer);
-
-  const std::vector<Value> input_values{1.0, 0.0};
-  CreateNetwork(input_values);
-
-  const std::size_t expected_synapses_size{9};
+  const std::size_t expected_synapses_size{30};
   ASSERT_EQ(expected_synapses_size, synapses_.size());
 
-  const std::array<Value, 2> expected_values{1.0, 0.0};
+  // Input layer
+  CheckNeuronConnectionSize(0, 5);
+  CheckNeuronConnectionSize(1, 5);
+  CheckNeuronConnectionSize(2, 5);
+  CheckNeuronConnectionSize(3, 5);
 
-  // Values in the hidden and output layer are random so we compare that they
-  // are not equal to zero (invalid value)
-  const Value invalid_value{0.0};
-  const Weight invalid_weight{0.0};
-//
-//  EXPECT_EQ(expected_values[0], synapses_[1].GetParentNeuron()->GetValue());
-//  EXPECT_NE(invalid_value, synapses_[1].GetChildNeuron()->GetValue());
-//
-//  EXPECT_EQ(expected_values[1], synapses_[3].GetParentNeuron()->GetValue());
-//  EXPECT_NE(invalid_value, synapses_[3].GetChildNeuron()->GetValue());
-//
-//  EXPECT_EQ(expected_values[1], synapses_[5].GetParentNeuron()->GetValue());
-//  EXPECT_NE(invalid_value, synapses_[5].GetChildNeuron()->GetValue());
-//
-//  EXPECT_NE(invalid_value, synapses_[7].GetParentNeuron()->GetValue());
-//  EXPECT_NE(invalid_value, synapses_[7].GetChildNeuron()->GetValue());
-//
-//  EXPECT_NE(invalid_weight, synapses_[3].GetWeight());
-//  EXPECT_NE(invalid_weight, synapses_[7].GetWeight());
+  // Hidden layer
+  CheckNeuronConnectionSize(4, 2);
+  CheckNeuronConnectionSize(5, 2);
+  CheckNeuronConnectionSize(6, 2);
+  CheckNeuronConnectionSize(7, 2);
+  CheckNeuronConnectionSize(8, 2);
+
+  // Output layer
+  CheckNeuronConnectionSize(9, 0);
+  CheckNeuronConnectionSize(10, 0);
 }
 
 int main(int argc, char **argv) {

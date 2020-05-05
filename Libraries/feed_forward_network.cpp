@@ -11,8 +11,9 @@ void FeedForwardNetwork::DefineNeuralNetworkArchitecture(
 }
 
 void FeedForwardNetwork::TrainOnce() {
-
-
-
-   std::cout << "Hello World!\n";
+  for (std::size_t i = 1; i < neuron_id_; i++) {
+    auto element_pair = synapses_.equal_range(i);
+    std::cout << "First it elem: " << element_pair.first->second.GetParentNeuron()->GetId() << std::endl;
+    std::cout << "Second it elem: " << element_pair.second->second.GetParentNeuron()->GetId() << std::endl;
+  }
 }
