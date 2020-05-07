@@ -50,8 +50,7 @@ protected:
   /// synapse. Each synapse has its own weight.
   /// @param parent Parent neuron
   /// @param child Child neuron
-  void ConnectLayers(const std::vector<Neuron> &parent,
-                     const std::vector<Neuron> &child);
+  void ConnectLayers(std::vector<Neuron> &parent, std::vector<Neuron> &child);
 
   // Helper functions
   inline double GenerateRandomValue();
@@ -68,6 +67,7 @@ protected:
   std::vector<Neuron> hidden_layer_{};
   std::vector<Neuron> output_layer_{};
 
+  Id synapse_id_{0};
   Id neuron_id_{0};
 };
 

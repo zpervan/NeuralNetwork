@@ -47,7 +47,7 @@ TEST_F(NeuralNetworkBaseTestFixture,
   Neuron *child_neuron{
       new Neuron{default_values[1].first, default_values[1].second}};
 
-  auto *synapse = new Synapse(parent_neuron, child_neuron, 1.0);
+  auto *synapse = new Synapse(parent_neuron, child_neuron, 1.0, 0);
 
   ASSERT_TRUE(synapse);
 
@@ -68,7 +68,7 @@ TEST_F(
       new Neuron{default_values[0].first, default_values[0].second},
       new Neuron{default_values[1].first, default_values[1].second}};
 
-  auto *synapse = new Synapse(neurons[0], neurons[1], 0.0);
+  auto *synapse = new Synapse(neurons[0], neurons[1], 0.0, 0);
 
   ASSERT_TRUE(synapse);
 

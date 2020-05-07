@@ -1,5 +1,9 @@
 #include "feed_forward_network.h"
+
+#include <algorithm>
 #include <iostream>
+
+using SynapseIterator = std::multimap<Id, Synapse>::iterator;
 
 void FeedForwardNetwork::DefineNeuralNetworkArchitecture(
     NeuralNetworkArchitecture network, const std::vector<Value> &input_values) {
@@ -10,10 +14,28 @@ void FeedForwardNetwork::DefineNeuralNetworkArchitecture(
   CreateNetwork(input_values);
 }
 
+// TODO: Refactor. Please and thank you.
 void FeedForwardNetwork::TrainOnce() {
-  for (std::size_t i = 1; i < neuron_id_; i++) {
-    auto element_pair = synapses_.equal_range(i);
-    std::cout << "First it elem: " << element_pair.first->second.GetParentNeuron()->GetId() << std::endl;
-    std::cout << "Second it elem: " << element_pair.second->second.GetParentNeuron()->GetId() << std::endl;
+
+  for (std::size_t i = 0; i < neuron_id_; i++) {
+    std::pair<SynapseIterator, SynapseIterator> found_synapses =
+        synapses_.equal_range(i);
+
+    for (auto it = found_synapses.first; it != found_synapses.second; it++) {
+      std::cout << "Synapse ID: " << it->second.GetId() << "\n";
+      std::cout << "Synapse random weight: " << it->second.GetWeight() << "\n";
+      std::cout << "Child neuron value before calculation: "
+                << it->second.GetChildNeuron()->GetValue() << "\n";
+
+      Value child_neuron_value = it->second.GetChildNeuron()->GetValue();
+
+      child_neuron_value +=
+          it->second.GetParentNeuron()->GetValue() * it->second.GetWeight();
+
+      it->second.GetChildNeuron()->SetValue(child_neuron_value);
+
+      std::cout << "Child neuron value after calculation: "
+                << it->second.GetChildNeuron()->GetValue() << "\n";
+    }
   }
 }

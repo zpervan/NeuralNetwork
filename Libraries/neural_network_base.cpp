@@ -49,15 +49,16 @@ void NeuralNetworkBase::CreateNetwork(const std::vector<double> &input_values) {
   ConnectLayers(hidden_layer_, output_layer_);
 }
 
-void NeuralNetworkBase::ConnectLayers(const std::vector<Neuron> &parent,
-                                      const std::vector<Neuron> &child) {
-
+void NeuralNetworkBase::ConnectLayers(std::vector<Neuron> &parent,
+                                      std::vector<Neuron> &child) {
   for (std::size_t i = 0; i < parent.capacity(); i++) {
     for (std::size_t j = 0; j < child.capacity(); j++) {
       Synapse synapse;
       synapse.SetParentNeuron(&parent.at(i));
       synapse.SetChildNeuron(&child.at(j));
       synapse.SetWeight(GenerateRandomValue());
+      synapse.SetId(synapse_id_);
+      synapse_id_++;
 
       synapses_.emplace(synapse.GetParentNeuron()->GetId(), synapse);
     }

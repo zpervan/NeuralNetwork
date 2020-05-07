@@ -1,7 +1,7 @@
 #include "synapse.h"
 
-Synapse::Synapse(const Neuron *parent, const Neuron *child, double weight)
-    : parent_(parent), child_(child), weight_(weight) {}
+Synapse::Synapse(Neuron *parent, Neuron *child, double weight, const Id id)
+    : parent_(parent), child_(child), weight_(weight), id_(id) {}
 
 Synapse::~Synapse() {
   weight_ = 0;
@@ -9,13 +9,13 @@ Synapse::~Synapse() {
   child_ = nullptr;
 }
 
-void Synapse::SetParentNeuron(const Neuron *parent) {
+void Synapse::SetParentNeuron(Neuron *parent) {
   if (parent_ == nullptr) {
     parent_ = parent;
   }
 }
 
-void Synapse::SetChildNeuron(const Neuron *child) {
+void Synapse::SetChildNeuron(Neuron *child) {
   if (child_ == nullptr) {
     child_ = child;
   }
@@ -23,9 +23,12 @@ void Synapse::SetChildNeuron(const Neuron *child) {
 
 void Synapse::SetWeight(const Weight weight) { weight_ = weight; }
 
-const Neuron *Synapse::GetParentNeuron() const { return parent_; }
+void Synapse::SetId(const Id id) { id_ = id; }
 
-const Neuron *Synapse::GetChildNeuron() const { return child_; }
+Neuron *Synapse::GetParentNeuron() const { return parent_; }
+
+Neuron *Synapse::GetChildNeuron() const { return child_; }
 
 Weight Synapse::GetWeight() const { return weight_; }
 
+Id Synapse::GetId() const { return id_; }
