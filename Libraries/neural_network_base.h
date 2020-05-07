@@ -39,9 +39,6 @@ protected:
   /// @param input_values Input values which will be assigned to the input layer
   void SetInputValues(const std::vector<Value> &input_values);
 
-  /// @brief Reserve container space for synapse connections
-  void ReserveSynapseCapacity();
-
   /// @brief Assign initial random values to the passed layer
   /// @param layer Layer to which the values will be assigned
   void AddNeuronToLayer(std::vector<Neuron> &layer);
