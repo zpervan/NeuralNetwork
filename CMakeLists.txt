@@ -13,6 +13,6 @@ add_executable(Runner runner.cpp)
 
 target_link_libraries(Runner
         PRIVATE
-        FeedForwardNetwork
+        ExclusiveOrNeuralNetwork
         ActivationFunctions
         )

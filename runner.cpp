@@ -1,12 +1,12 @@
-#include "Libraries/feed_forward_network.h"
+#include "Libraries/exclusive_or_neural_network.h"
 
 int main() {
   NeuralNetworkArchitecture network_architecture{2, 3, 1};
   std::vector<Value> input_values{1, 1};
 
-  FeedForwardNetwork feed_forward_network;
-  feed_forward_network.DefineNeuralNetworkArchitecture(network_architecture,
+  ExclusiveOrNeuralNetwork exclusive_or_neural_network;
+  exclusive_or_neural_network.DefineNeuralNetworkArchitecture(network_architecture,
                                                        input_values);
-  feed_forward_network.TrainOnce();
+  exclusive_or_neural_network.CalculateInitialValues();
   return 0;
 }

@@ -1,21 +1,32 @@
-#include "../feed_forward_network.h"
-
+#include "../exclusive_or_neural_network.h"
 #include "gtest/gtest.h"
 
-class FeedForwardNetworkTestFixture : protected FeedForwardNetwork,
-                                      public ::testing::Test {};
+class ExclusiveOrNeuralNetworkTestFixture : protected ExclusiveOrNeuralNetwork,
+                                            public ::testing::Test {
+protected:
+  const NeuralNetworkArchitecture neural_network_architecture_{2, 3, 1};
+  const std::vector<Value> input_values_{1.0, 0.0};
+  const std::size_t expected_synapses_size_{9};
+
+  void CheckSynapsesChildNeuronValuesNotZero(
+      const std::multimap<Id, Synapse> &actual_values) {
+    for (const auto &actual_value : actual_values) {
+      EXPECT_NE(0, actual_value.second.GetChildNeuron()->GetValue())
+          << "Synapse ID: " << actual_value.first << "\n";
+    }
+  };
+};
 
 TEST_F(
-    FeedForwardNetworkTestFixture,
+    ExclusiveOrNeuralNetworkTestFixture,
     GivenDefinedArchitectureAndInputValues_WhenCreatingNetwork_ThenNetworkSuccessfullyCreated) {
 
-  const NeuralNetworkArchitecture neural_network_architecture{2, 3, 1};
-  const std::vector<Value> input_values{1.0, 0.0};
+  DefineNeuralNetworkArchitecture(neural_network_architecture_, input_values_);
+  ASSERT_EQ(expected_synapses_size_, GetSynapses().size());
 
-  DefineNeuralNetworkArchitecture(neural_network_architecture, input_values);
+  CalculateInitialValues();
 
-  const std::size_t expected_synapses_size{9};
-  ASSERT_EQ(expected_synapses_size, GetSynapses().size());
+  CheckSynapsesChildNeuronValuesNotZero(synapses_);
 }
 
 int main(int argc, char **argv) {

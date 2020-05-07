@@ -23,17 +23,17 @@ add_library(NeuralNetworkBase
 target_link_libraries(NeuralNetworkBase
         PRIVATE
         ActivationFunctions
-        FeedForwardNetwork
+        ExclusiveOrNeuralNetwork
         NeuralNetworkComponents
         )
 
-add_library(FeedForwardNetwork
+add_library(ExclusiveOrNeuralNetwork
         STATIC
-        feed_forward_network.h
-        feed_forward_network.cpp
+        exclusive_or_neural_network.h
+        exclusive_or_neural_network.cpp
         )
 
-target_link_libraries(FeedForwardNetwork
+target_link_libraries(ExclusiveOrNeuralNetwork
         PRIVATE
         NeuralNetworkBase
         )
@@ -53,8 +53,8 @@ add_executable(ActivationFunctionsTest
         Test/activation_functions_test.cpp
         )
 
-add_executable(FeedForwardNetworkTest
-        Test/feed_forward_network_test.cpp
+add_executable(ExclusiveOrNeuralNetworkTest
+        Test/exclusive_or_neural_network_test.cpp
         )
 
 add_executable(NeuralNetworkBaseTest
@@ -67,8 +67,8 @@ target_link_libraries(ActivationFunctionsTest
         ${GTest_Libs}
         )
 
-target_link_libraries(FeedForwardNetworkTest
-        FeedForwardNetwork
+target_link_libraries(ExclusiveOrNeuralNetworkTest
+        ExclusiveOrNeuralNetwork
         ${GTest_Libs}
         )
 
@@ -80,6 +80,6 @@ target_link_libraries(NeuralNetworkBaseTest
 # Create a test suite
 add_test(TestAll
         ActivationFunctionsTest
-        FeedForwardNetworkTest
+        ExclusiveOrNeuralNetworkTest
         NeuralNetworkBaseTest
         )
