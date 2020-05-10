@@ -38,13 +38,18 @@ void NeuralNetworkBase::SetInputValues(const std::vector<Value> &input_values) {
 }
 
 void NeuralNetworkBase::CreateNetwork(const std::vector<double> &input_values) {
+  CreateLayers(input_values);
+  ConnectNetwork();
+}
+
+void NeuralNetworkBase::CreateLayers(const std::vector<double> &input_values) {
   SetInputValues(input_values);
   AddNeuronToLayer(hidden_layer_);
   AddNeuronToLayer(output_layer_);
-
   AreLayersSizeAndCapacitySame();
+}
 
-  // TODO: Generalize layer connection
+void NeuralNetworkBase::ConnectNetwork() {
   ConnectLayers(input_layer_, hidden_layer_);
   ConnectLayers(hidden_layer_, output_layer_);
 }
@@ -60,7 +65,7 @@ void NeuralNetworkBase::ConnectLayers(std::vector<Neuron> &parent,
       synapse.SetId(synapse_id_);
       synapse_id_++;
 
-      synapses_.emplace(synapse.GetParentNeuron()->GetId(), synapse);
+      synapses_.emplace(synapse.GetChildNeuron()->GetId(), synapse);
     }
   }
 }

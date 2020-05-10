@@ -35,13 +35,23 @@ public:
   std::multimap<Id, Synapse> GetSynapses() const;
 
 protected:
+  /// @brief Creates the layers of the neural network based on the predefined
+  /// network architecture size
+  /// @param input_values Input values which will be assigned to the input layer
+  /// neurons
+  void CreateLayers(const std::vector<double> &input_values);
+
   /// @brief Assign values to neurons in the input layer
   /// @param input_values Input values which will be assigned to the input layer
+  /// neurons
   void SetInputValues(const std::vector<Value> &input_values);
 
   /// @brief Assign initial random values to the passed layer
   /// @param layer Layer to which the values will be assigned
   void AddNeuronToLayer(std::vector<Neuron> &layer);
+
+  /// @brief Connects all layers of the defined neural network
+  void ConnectNetwork();
 
   /// @brief Defines the parent-child relationship which is connected with a
   /// synapse. Each synapse has its own weight.
