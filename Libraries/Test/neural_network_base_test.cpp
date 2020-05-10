@@ -181,24 +181,17 @@ TEST_F(
   const std::size_t expected_synapses_size{30};
   ASSERT_EQ(expected_synapses_size, synapses_.size());
 
-  // Input layer
-  CheckNeuronConnectionSize(0, 5);
-  CheckNeuronConnectionSize(1, 5);
-  CheckNeuronConnectionSize(2, 5);
-  CheckNeuronConnectionSize(3, 5);
-
   // Hidden layer
-  CheckNeuronConnectionSize(4, 2);
-  CheckNeuronConnectionSize(5, 2);
-  CheckNeuronConnectionSize(6, 2);
-  CheckNeuronConnectionSize(7, 2);
-  CheckNeuronConnectionSize(8, 2);
+  CheckNeuronConnectionSize(4, 4);
+  CheckNeuronConnectionSize(5, 4);
+  CheckNeuronConnectionSize(6, 4);
+  CheckNeuronConnectionSize(7, 4);
+  CheckNeuronConnectionSize(8, 4);
 
   // Output layer
-  CheckNeuronConnectionSize(9, 0);
-  CheckNeuronConnectionSize(10, 0);
+  CheckNeuronConnectionSize(9, 5);
+  CheckNeuronConnectionSize(10,5);
 }
-
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
