@@ -8,15 +8,15 @@
 /// @brief Defines one neuron. Each neuron is aware of it's parent node.
 class Neuron {
 public:
-  Neuron(const Id id, const double value = 0, const double result = 0)
-      : id_(id), value_(value), result_(result){};
+  Neuron(const Id id, const double value = 0, const double activation_func_result = 0)
+      :id_(id), value_(value), activation_func_result_(activation_func_result){};
 
   Id GetId() const;
   Value GetValue() const;
-  double GetResult() const;
+  double GetActivationFunctionResult() const;
 
   void SetValue(const double &value);
-  void SetResult(const double &result);
+  void SetActivationFunctionResult(const double &activation_func_result);
 
   Neuron() = default;
   ~Neuron() = default;
@@ -24,7 +24,7 @@ public:
 private:
   const Id id_;
   Value value_;
-  Value result_;
+  Value activation_func_result_;
 };
 
 #endif // NEURALNETWORK_NEURON_H

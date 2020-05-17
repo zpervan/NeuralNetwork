@@ -6,6 +6,6 @@ Id Neuron::GetId() const { return id_; }
 
 void Neuron::SetValue(const double &value) { value_ = value; }
 
-double Neuron::GetResult() const { return result_; }
+double Neuron::GetActivationFunctionResult() const { return activation_func_result_; }
 
-void Neuron::SetResult(const double &result) { result_ = result; }
+void Neuron::SetActivationFunctionResult(const double &result) { activation_func_result_ = result; }

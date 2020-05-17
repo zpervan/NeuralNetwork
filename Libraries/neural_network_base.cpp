@@ -32,7 +32,7 @@ void NeuralNetworkBase::SetNumberOfNeuronsInOutputLayer(size_t size) {
 
 void NeuralNetworkBase::SetInputValues(const std::vector<Value> &input_values) {
   for (auto &value : input_values) {
-    input_layer_.emplace_back(Neuron{neuron_id_, value});
+    input_layer_.emplace_back(Neuron{neuron_id_, value, value});
     neuron_id_++;
   }
 }

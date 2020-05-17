@@ -2,6 +2,7 @@
 #define NEURALNETWORK_SIMPLE_NEURAL_NETWORK_H
 
 #include "Base/neural_network_architecture_data.h"
+#include "activation_functions.h"
 #include "neural_network_base.h"
 
 using SynapseIterator = std::multimap<Id, Synapse>::iterator;
@@ -17,13 +18,15 @@ public:
   void DefineNeuralNetworkArchitecture(NeuralNetworkArchitecture network,
                                        const std::vector<Value> &input_values);
 
-  /// @brief Calculates the initial values for defined neural network
-  /// architecture
+  /// @brief Calculates the initial values for defined synapses.
   void CalculateInitialValues();
 
 protected:
-  void CalculateChildNeuronValue(
-      const std::pair<SynapseIterator, SynapseIterator> &found_synapses) const;
+  void CalculateNeuronValues(
+      const std::pair<SynapseIterator, SynapseIterator> &found_synapses);
+
+  void ApplyActivationFunctionToNeuronValues(
+      const std::pair<SynapseIterator, SynapseIterator> &calculated_values);
 };
 
 #endif // NEURALNETWORK_SIMPLE_NEURAL_NETWORK_H

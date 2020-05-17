@@ -4,32 +4,139 @@
 class ExclusiveOrNeuralNetworkTestFixture : protected ExclusiveOrNeuralNetwork,
                                             public ::testing::Test {
 protected:
-  const NeuralNetworkArchitecture neural_network_architecture_{2, 3, 1};
-  const std::vector<Value> input_values_{1.0, 0.0};
-  const std::size_t expected_synapses_size_{9};
+    ExclusiveOrNeuralNetworkTestFixture() = default;
 
-  void CheckSynapsesChildNeuronValuesNotZero(
-      const std::multimap<Id, Synapse> &actual_values) {
-    for (const auto &actual_value : actual_values) {
-      EXPECT_NE(0, actual_value.second.GetChildNeuron()->GetValue())
-          << "Synapse ID: " << actual_value.first << "\n";
+    ~ExclusiveOrNeuralNetworkTestFixture()
+    {
+        input_layer_.clear();
+        hidden_layer_.clear();
+        output_layer_.clear();
     }
-  };
+
+    const NeuralNetworkArchitecture neural_network_architecture_{2, 3, 1};
+    const std::vector<Value> input_values_{1.0, 0.0};
+    const std::size_t expected_synapses_size_{9};
+
+    void CreateDefaultPredefinedConnectedNetwork()
+    {
+
+        input_layer_.reserve(2);
+        input_layer_.emplace_back(0, 1.0);
+        input_layer_.emplace_back(1, 1.0);
+
+        hidden_layer_.reserve(3);
+        hidden_layer_.emplace_back(2, 1.0, 0.73);
+        hidden_layer_.emplace_back(3, 1.3, 0.79);
+        hidden_layer_.emplace_back(4, 0.8, 0.69);
+
+        output_layer_.reserve(1);
+        output_layer_.emplace_back(5, 1.2, 0.77);
+
+        // Connect first hidden layer neuron with input layer neurons
+        synapses_.emplace(
+                2, Synapse{&input_layer_.at(0), &hidden_layer_.at(0), 0.8, 0});
+        synapses_.emplace(
+                2, Synapse{&input_layer_.at(1), &hidden_layer_.at(0), 0.2, 1});
+
+        // Connect second hidden layer neuron with input layer neurons
+        synapses_.emplace(
+                3, Synapse{&input_layer_.at(0), &hidden_layer_.at(1), 0.4, 3});
+        synapses_.emplace(
+                3, Synapse{&input_layer_.at(1), &hidden_layer_.at(1), 0.9, 4});
+
+        // Connect third hidden layer neuron with input layer neurons
+        synapses_.emplace(
+                4, Synapse{&input_layer_.at(0), &hidden_layer_.at(2), 0.3, 4});
+        synapses_.emplace(
+                4, Synapse{&input_layer_.at(1), &hidden_layer_.at(2), 0.5, 5});
+
+        // Connect output layer neuron with hidden layer neurons
+        synapses_.emplace(
+                5, Synapse{&hidden_layer_.at(0), &output_layer_.at(0), 0.3, 6});
+        synapses_.emplace(
+                5, Synapse{&hidden_layer_.at(1), &output_layer_.at(0), 0.5, 7});
+        synapses_.emplace(
+                5, Synapse{&hidden_layer_.at(2), &output_layer_.at(0), 0.9, 8});
+
+        // ID's aka counts
+        synapse_id_ = 8;
+        neuron_id_ = 5;
+    }
+
+    void SetNetworkNeuronValuesToZero()
+    {
+        hidden_layer_.at(0).SetValue(0);
+        hidden_layer_.at(1).SetValue(0);
+        hidden_layer_.at(2).SetValue(0);
+        output_layer_.at(0).SetValue(0);
+    }
+
+    void CheckSynapsesChildNeuronValuesIsNotZero(
+            const std::multimap<Id, Synapse>& actual_values)
+    {
+        for (const auto& actual_value : actual_values) {
+            EXPECT_NE(0, actual_value.second.GetChildNeuron()->GetValue())
+                            << "Synapse ID: " << actual_value.first << "\n";
+        }
+    };
 };
 
 TEST_F(
-    ExclusiveOrNeuralNetworkTestFixture,
-    GivenDefinedArchitectureAndInputValues_WhenCreatingNetwork_ThenNetworkSuccessfullyCreated) {
+        ExclusiveOrNeuralNetworkTestFixture,
+        GivenDefinedArchitectureAndInputValues_WhenCalculatingNeuronValues_ThenValuesSuccessfullyAssigned)
+{
 
-  DefineNeuralNetworkArchitecture(neural_network_architecture_, input_values_);
-  ASSERT_EQ(expected_synapses_size_, GetSynapses().size());
+    DefineNeuralNetworkArchitecture(neural_network_architecture_, input_values_);
+    ASSERT_EQ(expected_synapses_size_, GetSynapses().size());
 
-  CalculateInitialValues();
+    CalculateInitialValues();
 
-  CheckSynapsesChildNeuronValuesNotZero(synapses_);
+    CheckSynapsesChildNeuronValuesIsNotZero(synapses_);
 }
 
-int main(int argc, char **argv) {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
+TEST_F(
+        ExclusiveOrNeuralNetworkTestFixture,
+        GivenPredefinedArchitecture_WhenCalculatingInitialValues_ThenExpectedValueIsCalculated)
+{
+
+    CreateDefaultPredefinedConnectedNetwork();
+    SetNetworkNeuronValuesToZero();
+
+    for (std::size_t i = 2; i<=neuron_id_; i++) {
+        CalculateNeuronValues(synapses_.equal_range(i));
+    }
+
+    const std::array<Value, 4> expected_values{1.0, 1.3, 0.8, 1.235};
+    EXPECT_DOUBLE_EQ(expected_values[0], hidden_layer_[0].GetValue());
+    EXPECT_DOUBLE_EQ(expected_values[1], hidden_layer_[1].GetValue());
+    EXPECT_DOUBLE_EQ(expected_values[2], hidden_layer_[2].GetValue());
+    EXPECT_DOUBLE_EQ(expected_values[3], output_layer_[0].GetValue());
+}
+
+TEST_F(
+        ExclusiveOrNeuralNetworkTestFixture,
+        DISABLED_GivenPredefinedArchitecture_WhenApplyingActivationFunction_ThenExpectedValueIsCalculated)
+{
+
+    CreateDefaultPredefinedConnectedNetwork();
+
+    // First hidden neuron and it's children in the output layer
+    ApplyActivationFunctionToNeuronValues(synapses_.equal_range(2));
+    // Second hidden neuron and it's children in the output layer
+    ApplyActivationFunctionToNeuronValues(synapses_.equal_range(3));
+    // Third hidden neuron and it's children in the output layer
+    ApplyActivationFunctionToNeuronValues(synapses_.equal_range(4));
+
+    const std::array<double, 4> expected_result{0.7310, 0.7858, 0.6899, 0.7685};
+
+    EXPECT_NEAR(expected_result[0], hidden_layer_.at(0).GetActivationFunctionResult(), 1e-4);
+    EXPECT_NEAR(expected_result[1], hidden_layer_.at(1).GetActivationFunctionResult(), 1e-4);
+    EXPECT_NEAR(expected_result[2], hidden_layer_.at(2).GetActivationFunctionResult(), 1e-4);
+    EXPECT_NEAR(expected_result[3], output_layer_.at(0).GetActivationFunctionResult(), 1e-4);
+}
+
+int main(int argc, char** argv)
+{
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
