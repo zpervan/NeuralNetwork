@@ -13,7 +13,7 @@ protected:
         output_layer_.clear();
     }
 
-    const NeuralNetworkArchitecture neural_network_architecture_{2, 3, 1};
+    const NeuralNetworkArchitecture neural_network_architecture_{2, 3, 1, ActivationFunctionType::SIGMOID};
     const std::vector<Value> input_values_{1.0, 0.0};
     const std::size_t expected_synapses_size_{9};
 
@@ -61,9 +61,12 @@ protected:
         // ID's aka counts
         synapse_id_ = 8;
         neuron_id_ = 5;
+
+        // Activation function - SIGMOID
+        activation_function_type_ = ActivationFunctionType::SIGMOID;
     }
 
-    void SetNetworkNeuronValuesToZero()
+    void SetPredefinedNetworkNeuronValuesToZero()
     {
         hidden_layer_.at(0).SetValue(0);
         hidden_layer_.at(1).SetValue(0);
@@ -80,6 +83,45 @@ protected:
         }
     };
 };
+
+TEST_F(ExclusiveOrNeuralNetworkTestFixture,
+        GivenDefinedNeuralNetworkArchitecture_WhenApplyingActivationFunctions_ThenCorrectValueReturned)
+{
+    CreateDefaultPredefinedConnectedNetwork();
+    const Value value{hidden_layer_.at(0).GetValue()};
+
+    SetActivationFunctionType(ActivationFunctionType::LINEAR);
+
+    Value actual_activation_function_result{ApplyActivationFunction(value)};
+    Value expected_activation_function_result{1.000};
+
+    EXPECT_NEAR(expected_activation_function_result, actual_activation_function_result, 1e-3);
+
+    SetActivationFunctionType(ActivationFunctionType::SIGMOID);
+
+    actual_activation_function_result = ApplyActivationFunction(value);
+    expected_activation_function_result = 0.731;
+
+    EXPECT_NEAR(expected_activation_function_result, actual_activation_function_result, 1e-3);
+
+    SetActivationFunctionType(ActivationFunctionType::HYPERBOLIC);
+
+    actual_activation_function_result = ApplyActivationFunction(value);
+    expected_activation_function_result = 0.103;
+
+    EXPECT_NEAR(expected_activation_function_result, actual_activation_function_result, 1e-3);
+
+}
+
+TEST_F(ExclusiveOrNeuralNetworkTestFixture,
+        GivenUnknownActivationFunctionType_WhenApplyingActivationFunctionToValue_ThenExceptionIsThrown)
+{
+    CreateDefaultPredefinedConnectedNetwork();
+
+    SetActivationFunctionType(ActivationFunctionType::UNKNOWN);
+
+    EXPECT_THROW(ApplyActivationFunction(hidden_layer_.at(0).GetValue()), std::invalid_argument);
+}
 
 TEST_F(
         ExclusiveOrNeuralNetworkTestFixture,
@@ -100,7 +142,7 @@ TEST_F(
 {
 
     CreateDefaultPredefinedConnectedNetwork();
-    SetNetworkNeuronValuesToZero();
+    SetPredefinedNetworkNeuronValuesToZero();
 
     for (std::size_t i = 2; i<=neuron_id_; i++) {
         CalculateNeuronValues(synapses_.equal_range(i));

@@ -6,11 +6,11 @@
 void ExclusiveOrNeuralNetwork::DefineNeuralNetworkArchitecture(
         NeuralNetworkArchitecture network, const std::vector<Value>& input_values)
 {
-
     SetNumberOfNeuronsInInputLayer(network.input_layer_size);
     SetNumberOfNeuronsInSingleHiddenLayer(network.single_hidden_layer_size);
     SetNumberOfNeuronsInOutputLayer(network.output_layer_layer_size);
     CreateNetwork(input_values);
+    SetActivationFunctionType(network.activation_function_type);
 }
 
 void ExclusiveOrNeuralNetwork::CalculateInitialValues()
@@ -38,7 +38,7 @@ void ExclusiveOrNeuralNetwork::CalculateNeuronValues(
 
     for (auto it = found_synapses.first; it!=found_synapses.second; it++) {
         Value child_neuron_value = it->second.GetChildNeuron()->GetValue();
-
+        /// @TODO: Consider the situation when the activation function result is 0 - how to handle this situation?
         if (it->second.GetParentNeuron()->GetActivationFunctionResult()>0) {
             child_neuron_value += it->second.GetParentNeuron()->GetActivationFunctionResult()*it->second.GetWeight();
         }
@@ -51,16 +51,29 @@ void ExclusiveOrNeuralNetwork::CalculateNeuronValues(
     }
 }
 
-/// @todo: Add activation function type
+/// @todo: Test the iteration logic
 void ExclusiveOrNeuralNetwork::ApplyActivationFunctionToNeuronValues(
         const std::pair<SynapseIterator, SynapseIterator>& calculated_values)
 {
-
     for (auto it = calculated_values.first; it!=calculated_values.second;
          it++) {
-        Value child_neuron_value = it->second.GetChildNeuron()->GetValue();
+        auto value = ApplyActivationFunction(it->second.GetChildNeuron()->GetValue());
 
-        it->second.GetChildNeuron()->SetActivationFunctionResult(
-                ActivationFunction::Sigmoid(child_neuron_value));
+        it->second.GetChildNeuron()->SetActivationFunctionResult(value);
     }
+}
+
+double ExclusiveOrNeuralNetwork::ApplyActivationFunction(const double value)
+{
+    switch (activation_function_type_) {
+    case ActivationFunctionType::LINEAR :return ActivationFunction::Linear(value);
+    case ActivationFunctionType::SIGMOID :return ActivationFunction::Sigmoid(value);
+    case ActivationFunctionType::HYPERBOLIC:return ActivationFunction::HyperbolicTangent(value);
+    default: throw std::invalid_argument("No activation function is defined!");
+    }
+}
+
+void ExclusiveOrNeuralNetwork::SetActivationFunctionType(ActivationFunctionType activation_function_type)
+{
+    activation_function_type_ = activation_function_type;
 }
