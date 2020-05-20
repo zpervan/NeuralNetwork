@@ -157,23 +157,23 @@ TEST_F(
 
 TEST_F(
         ExclusiveOrNeuralNetworkTestFixture,
-        DISABLED_GivenPredefinedArchitecture_WhenApplyingActivationFunction_ThenExpectedValueIsCalculated)
+        GivenPredefinedArchitecture_WhenApplyingActivationFunction_ThenExpectedValueIsCalculated)
 {
-
     CreateDefaultPredefinedConnectedNetwork();
-
-    // First hidden neuron and it's children in the output layer
-    ApplyActivationFunctionToNeuronValues(synapses_.equal_range(2));
-    // Second hidden neuron and it's children in the output layer
-    ApplyActivationFunctionToNeuronValues(synapses_.equal_range(3));
-    // Third hidden neuron and it's children in the output layer
-    ApplyActivationFunctionToNeuronValues(synapses_.equal_range(4));
 
     const std::array<double, 4> expected_result{0.7310, 0.7858, 0.6899, 0.7685};
 
+    // First hidden neuron and it's children in the output layer
+    ApplyActivationFunctionOnNeuronsValue(synapses_.find(2));
     EXPECT_NEAR(expected_result[0], hidden_layer_.at(0).GetActivationFunctionResult(), 1e-4);
+    // Second hidden neuron and it's children in the output layer
+    ApplyActivationFunctionOnNeuronsValue(synapses_.find(3));
     EXPECT_NEAR(expected_result[1], hidden_layer_.at(1).GetActivationFunctionResult(), 1e-4);
+    // Third hidden neuron and it's children in the output layer
+    ApplyActivationFunctionOnNeuronsValue(synapses_.find(4));
     EXPECT_NEAR(expected_result[2], hidden_layer_.at(2).GetActivationFunctionResult(), 1e-4);
+
+    ApplyActivationFunctionOnNeuronsValue(synapses_.find(5));
     EXPECT_NEAR(expected_result[3], output_layer_.at(0).GetActivationFunctionResult(), 1e-4);
 }
 

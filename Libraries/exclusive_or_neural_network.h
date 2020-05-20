@@ -24,8 +24,8 @@ public:
 protected:
     void CalculateNeuronValues(
             const std::pair<SynapseIterator, SynapseIterator>& found_synapses);
-    void ApplyActivationFunctionToNeuronValues(
-            const std::pair<SynapseIterator, SynapseIterator>& calculated_values);
+    void ApplyActivationFunctionOnNeuronsValue(
+            const SynapseIterator& calculated_value);
     double ApplyActivationFunction(double value);
     void SetActivationFunctionType(const ActivationFunctionType activation_function_type);
 

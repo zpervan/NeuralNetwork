@@ -21,7 +21,7 @@ void ExclusiveOrNeuralNetwork::CalculateInitialValues()
                 synapses_.equal_range(i);
 
         CalculateNeuronValues(found_synapses);
-        ApplyActivationFunctionToNeuronValues(found_synapses);
+        ApplyActivationFunctionOnNeuronsValue(found_synapses.first);
     }
     std::cout << "Synapse size (num of elements):  " << synapses_.size() << "\n";
 
@@ -51,16 +51,12 @@ void ExclusiveOrNeuralNetwork::CalculateNeuronValues(
     }
 }
 
-/// @todo: Test the iteration logic
-void ExclusiveOrNeuralNetwork::ApplyActivationFunctionToNeuronValues(
-        const std::pair<SynapseIterator, SynapseIterator>& calculated_values)
+void ExclusiveOrNeuralNetwork::ApplyActivationFunctionOnNeuronsValue(
+        const SynapseIterator& calculated_value)
 {
-    for (auto it = calculated_values.first; it!=calculated_values.second;
-         it++) {
-        auto value = ApplyActivationFunction(it->second.GetChildNeuron()->GetValue());
-
-        it->second.GetChildNeuron()->SetActivationFunctionResult(value);
-    }
+    auto neuron_value = calculated_value->second.GetChildNeuron()->GetValue();
+    calculated_value->second.GetChildNeuron()->SetActivationFunctionResult(
+            ApplyActivationFunction(neuron_value));
 }
 
 double ExclusiveOrNeuralNetwork::ApplyActivationFunction(const double value)
