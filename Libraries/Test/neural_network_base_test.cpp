@@ -155,7 +155,7 @@ TEST_F(NeuralNetworkBaseTestFixture,
   CreateLayersWithDefaultSize();
 
   SetInputValues(default_input_values);
-  AddNeuronToLayer(hidden_layer_);
+    CreateNeuronsInLayer(hidden_layer_);
 
   ConnectLayers(input_layer_, hidden_layer_);
 
@@ -163,7 +163,7 @@ TEST_F(NeuralNetworkBaseTestFixture,
 
   ASSERT_EQ(expected_input_hidden_layer_synapse_size, synapses_.size());
 
-  AddNeuronToLayer(output_layer_);
+    CreateNeuronsInLayer(output_layer_);
   ConnectLayers(hidden_layer_, output_layer_);
 
   const std::size_t expected_synapse_size{30};

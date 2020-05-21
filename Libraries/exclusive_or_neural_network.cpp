@@ -15,7 +15,7 @@ void ExclusiveOrNeuralNetwork::DefineNeuralNetworkArchitecture(
 
 void ExclusiveOrNeuralNetwork::CalculateInitialValues()
 {
-    for (std::size_t i = 0; i<=neuron_id_; i++) {
+    for (std::size_t i = 0; i<neuron_id_; i++) {
 
         std::pair<SynapseIterator, SynapseIterator> found_synapses =
                 synapses_.equal_range(i);
@@ -23,12 +23,24 @@ void ExclusiveOrNeuralNetwork::CalculateInitialValues()
         CalculateNeuronValues(found_synapses);
         ApplyActivationFunctionOnNeuronsValue(found_synapses.first);
     }
-    std::cout << "Synapse size (num of elements):  " << synapses_.size() << "\n";
+}
 
-    for (std::size_t i = i; i<=synapse_id_; i++) {
-        std::pair<SynapseIterator, SynapseIterator> found_synapses =
-                synapses_.equal_range(i);
+void ExclusiveOrNeuralNetwork::PrintNeuralNetworkData()
+{
+    std::cout << "\e[30m- - - - Input layer - - - -\e[0m \n";
+    PrintLayerData(input_layer_);
+    std::cout << "\e[92m- - - - Hidden layer - - - -\e[0m \n";
+    PrintLayerData(hidden_layer_);
+    std::cout << "\e[33m- - - - Output layer - - - -\e[0m \n";
+    PrintLayerData(output_layer_);
+}
 
+void ExclusiveOrNeuralNetwork::PrintLayerData(const std::vector<Neuron>& layer) const
+{
+    for (auto element : layer) {
+        std::cout << "ID: " << element.GetId() << "\n";
+        std::cout << "Value: " << element.GetValue() << "\n";
+        std::cout << "Activation function result: " << element.GetActivationFunctionResult() << "\n";
     }
 }
 

@@ -48,7 +48,7 @@ protected:
 
   /// @brief Assign initial random values to the passed layer
   /// @param layer Layer to which the values will be assigned
-  void AddNeuronToLayer(std::vector<Neuron> &layer);
+  void CreateNeuronsInLayer(std::vector<Neuron> &layer);
 
   /// @brief Connects all layers of the defined neural network
   void ConnectNetwork();
