@@ -5,8 +5,7 @@
 
 /// @brief Defines a connection between two neurons - synapse. Each synapse has
 /// a weight which should be a random value while instantiating. Afterwards it's
-/// calculated during training.
-/// @todo: Adjust tests to check Id
+/// calculated during the training process.
 class Synapse {
 public:
   Synapse(Neuron *parent, Neuron *child, double weight, Id id = 0);

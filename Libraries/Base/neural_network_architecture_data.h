@@ -9,7 +9,7 @@ using Id = std::uint64_t;
 using Value = double;
 using Weight = double;
 
-// TODO: Add multiple levels of hidden layer
+/// @TODO: Add multiple levels of hidden layer
 struct NeuralNetworkArchitecture {
   std::size_t input_layer_size;
   std::size_t single_hidden_layer_size;

@@ -56,6 +56,7 @@ void NeuralNetworkBase::CreateLayers(const std::vector<double>& input_values)
     AreLayersSizeAndCapacitySame();
 }
 
+/// @TODO: Adjust the layer connection so it can connect multiple hidden layers
 void NeuralNetworkBase::ConnectNetwork()
 {
     ConnectLayers(input_layer_, hidden_layer_);
