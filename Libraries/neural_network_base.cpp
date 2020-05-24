@@ -23,37 +23,64 @@ void NeuralNetworkBase::SetNumberOfNeuronsInInputLayer(size_t size)
 void NeuralNetworkBase::SetNumberOfNeuronsInSingleHiddenLayer(size_t size)
 {
     (size<input_layer_.capacity()) || (size==0)
-    ? throw std::invalid_argument("Size of hidden layer should be at least "
-                                  "the size of the input layer!")
+    ? throw std::invalid_argument(
+            "Size of hidden layer should be at least "
+            "the size of the input layer!")
     : hidden_layer_.reserve(size);
 }
 
 void NeuralNetworkBase::SetNumberOfNeuronsInOutputLayer(size_t size)
 {
     size>0 ? output_layer_.reserve(size)
-           : throw std::invalid_argument("Size of output layer is not valid!");
+           : throw std::invalid_argument(
+            "Size of output layer is not valid!");
 }
 
-void NeuralNetworkBase::SetInputValues(const std::vector<Value>& input_values)
+void NeuralNetworkBase::CreateNetwork(
+        const std::vector<Value>& input_values,
+        const std::vector<Value>& output_targets)
 {
-    for (auto& value : input_values) {
+    CreateLayers(input_values, output_targets);
+    ConnectNetwork();
+}
+
+std::multimap<Id, Synapse> NeuralNetworkBase::GetSynapses() const
+{
+    if (synapses_.empty()) {
+        std::cerr << "Synapses are not yet defined!\n";
+        return {};
+    }
+
+    return synapses_;
+}
+
+void NeuralNetworkBase::CreateLayers(
+        const std::vector<Value>& input_values,
+        const std::vector<Value>& output_targets)
+{
+    SetInputValues(input_values);
+    CreateNeuronsInLayer(hidden_layer_);
+    SetTargetOutputValues(output_targets);
+    AreLayersSizeAndCapacitySame();
+}
+
+void NeuralNetworkBase::SetInputValues(
+        const std::vector<Value>& input_values)
+{
+    for (const auto& value : input_values) {
         input_layer_.emplace_back(Neuron{neuron_id_, value, value});
         neuron_id_++;
     }
 }
 
-void NeuralNetworkBase::CreateNetwork(const std::vector<double>& input_values)
+void NeuralNetworkBase::SetTargetOutputValues(
+        const std::vector<Value>& target_values)
 {
-    CreateLayers(input_values);
-    ConnectNetwork();
-}
-
-void NeuralNetworkBase::CreateLayers(const std::vector<double>& input_values)
-{
-    SetInputValues(input_values);
-    CreateNeuronsInLayer(hidden_layer_);
-    CreateNeuronsInLayer(output_layer_);
-    AreLayersSizeAndCapacitySame();
+    for (const auto& target_value : target_values) {
+        output_layer_.emplace_back(
+                Neuron{neuron_id_, 0.0, 0.0, target_value});
+        neuron_id_++;
+    }
 }
 
 /// @TODO: Adjust the layer connection so it can connect multiple hidden layers
@@ -83,7 +110,7 @@ void NeuralNetworkBase::ConnectLayers(std::vector<Neuron>& parent,
 void NeuralNetworkBase::CreateNeuronsInLayer(std::vector<Neuron>& layer)
 {
     for (std::size_t i = 0; i<layer.capacity(); i++) {
-        layer.emplace_back(Neuron{neuron_id_, 0});
+        layer.emplace_back(Neuron{neuron_id_});
         neuron_id_++;
     }
 }
@@ -109,14 +136,4 @@ void NeuralNetworkBase::AreLayersSizeAndCapacitySame()
         throw std::invalid_argument(
                 "Output layer capacity and elements size do not match!");
     }
-}
-
-std::multimap<Id, Synapse> NeuralNetworkBase::GetSynapses() const
-{
-    if (synapses_.empty()) {
-        std::cerr << "Synapses are not yet defined!\n";
-        return {};
-    }
-
-    return synapses_;
 }

@@ -4,12 +4,15 @@
 #include <iostream>
 
 void ExclusiveOrNeuralNetwork::DefineNeuralNetworkArchitecture(
-        NeuralNetworkArchitecture network, const std::vector<Value>& input_values)
+        NeuralNetworkArchitecture network,
+        const std::vector<Value>& input_values,
+        const std::vector<Value>& output_targets)
 {
     SetNumberOfNeuronsInInputLayer(network.input_layer_size);
-    SetNumberOfNeuronsInSingleHiddenLayer(network.single_hidden_layer_size);
+    SetNumberOfNeuronsInSingleHiddenLayer(
+            network.single_hidden_layer_size);
     SetNumberOfNeuronsInOutputLayer(network.output_layer_layer_size);
-    CreateNetwork(input_values);
+    CreateNetwork(input_values, output_targets);
     SetActivationFunctionType(network.activation_function_type);
 }
 
@@ -35,12 +38,14 @@ void ExclusiveOrNeuralNetwork::PrintNeuralNetworkData()
     PrintLayerData(output_layer_);
 }
 
-void ExclusiveOrNeuralNetwork::PrintLayerData(const std::vector<Neuron>& layer) const
+void ExclusiveOrNeuralNetwork::PrintLayerData(
+        const std::vector<Neuron>& layer) const
 {
     for (auto element : layer) {
         std::cout << "ID: " << element.GetId() << "\n";
         std::cout << "Value: " << element.GetValue() << "\n";
-        std::cout << "Activation function result: " << element.GetActivationFunctionResult() << "\n";
+        std::cout << "Activation function result: "
+                  << element.GetActivationFunctionResult() << "\n";
     }
 }
 
@@ -51,13 +56,17 @@ void ExclusiveOrNeuralNetwork::CalculateNeuronValues(
     for (auto it = found_synapses.first; it!=found_synapses.second; it++) {
         Value child_neuron_value = it->second.GetChildNeuron()->GetValue();
         /// @TODO: Consider the situation when the activation function result is 0 - how to handle this situation?
-        if (it->second.GetParentNeuron()->GetActivationFunctionResult()>0) {
-            child_neuron_value += it->second.GetParentNeuron()->GetActivationFunctionResult()*it->second.GetWeight();
+        if (it->second.GetParentNeuron()->GetActivationFunctionResult()
+                >0) {
+            child_neuron_value +=
+                    it->second.GetParentNeuron()->GetActivationFunctionResult()
+                            *it->second.GetWeight();
         }
         else {
             // Because input layer does not have a activation function result, take the input value and calculate the
             // child neuron value
-            child_neuron_value += it->second.GetParentNeuron()->GetValue()*it->second.GetWeight();
+            child_neuron_value += it->second.GetParentNeuron()->GetValue()
+                    *it->second.GetWeight();
         }
         it->second.GetChildNeuron()->SetValue(child_neuron_value);
     }
@@ -71,17 +80,23 @@ void ExclusiveOrNeuralNetwork::ApplyActivationFunctionOnNeuronsValue(
             ApplyActivationFunction(neuron_value));
 }
 
-double ExclusiveOrNeuralNetwork::ApplyActivationFunction(const double value)
+double ExclusiveOrNeuralNetwork::ApplyActivationFunction(
+        const double value)
 {
     switch (activation_function_type_) {
-    case ActivationFunctionType::LINEAR :return ActivationFunction::Linear(value);
-    case ActivationFunctionType::SIGMOID :return ActivationFunction::Sigmoid(value);
-    case ActivationFunctionType::HYPERBOLIC:return ActivationFunction::HyperbolicTangent(value);
-    default: throw std::invalid_argument("No activation function is defined!");
+    case ActivationFunctionType::LINEAR :
+        return ActivationFunction::Linear(value);
+    case ActivationFunctionType::SIGMOID :
+        return ActivationFunction::Sigmoid(value);
+    case ActivationFunctionType::HYPERBOLIC:
+        return ActivationFunction::HyperbolicTangent(value);
+    default:
+        throw std::invalid_argument("No activation function is defined!");
     }
 }
 
-void ExclusiveOrNeuralNetwork::SetActivationFunctionType(ActivationFunctionType activation_function_type)
+void ExclusiveOrNeuralNetwork::SetActivationFunctionType(
+        ActivationFunctionType activation_function_type)
 {
     activation_function_type_ = activation_function_type;
 }

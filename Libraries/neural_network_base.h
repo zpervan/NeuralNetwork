@@ -28,7 +28,9 @@ public:
     /// @brief Creates the whole neural network with defined layers, synapses and
     /// values assigned to them.
     /// @param input_values Values assigned to the input layer neurons
-    void CreateNetwork(const std::vector<double>& input_values);
+    void CreateNetwork(
+            const std::vector<Value>& input_values,
+            const std::vector<Value>& output_targets);
 
     /// @brief Gets the synapses
     /// @return Vector of filled synapses
@@ -39,12 +41,18 @@ protected:
     /// network architecture size
     /// @param input_values Input values which will be assigned to the input layer
     /// neurons
-    void CreateLayers(const std::vector<double>& input_values);
+    void CreateLayers(
+            const std::vector<Value>& input_values,
+            const std::vector<Value>& output_targets);
 
     /// @brief Assign values to neurons in the input layer
-    /// @param input_values Input values which will be assigned to the input layer
+    /// @param [in] input_values Input values which will be assigned to the input layer
     /// neurons
     void SetInputValues(const std::vector<Value>& input_values);
+
+    /// @brief Assign target values to neurons in the output layer
+    /// @param [in] target_values Target values which will be assigned to neurons in the output layer
+    void SetTargetOutputValues(const std::vector<Value>& target_values);
 
     /// @brief Assign initial random values to the passed layer
     /// @param layer Layer to which the values will be assigned
@@ -57,7 +65,8 @@ protected:
     /// synapse. Each synapse has its own weight.
     /// @param parent Parent neuron
     /// @param child Child neuron
-    void ConnectLayers(std::vector<Neuron>& parent, std::vector<Neuron>& child);
+    void ConnectLayers(std::vector<Neuron>& parent,
+            std::vector<Neuron>& child);
 
     // Helper functions
     inline double GenerateRandomValue();
@@ -76,6 +85,7 @@ protected:
 
     Id synapse_id_{0};
     Id neuron_id_{0};
+
 };
 
 #endif // NEURALNETWORK_NEURAL_NETWORK_BASE_H
