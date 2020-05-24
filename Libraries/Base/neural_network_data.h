@@ -17,4 +17,12 @@ struct NeuralNetworkArchitecture {
   ActivationFunctionType activation_function_type;
 };
 
+/// @brief Defines one neuron in the network
+struct Neuron {
+  const Id id{0};
+  Value value{0.0};
+  Value activation_func_result{0.0};
+  Value output_target{0.0};
+};
+
 #endif // NEURALNETWORK_NEURAL_NETWORK_ARCHITECTURE_DATA_H

@@ -102,7 +102,7 @@ void NeuralNetworkBase::ConnectLayers(std::vector<Neuron>& parent,
             synapse.SetId(synapse_id_);
             synapse_id_++;
 
-            synapses_.emplace(synapse.GetChildNeuron()->GetId(), synapse);
+            synapses_.emplace(synapse.GetChildNeuron()->id, synapse);
         }
     }
 }

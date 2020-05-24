@@ -1,15 +1,13 @@
 #ifndef NEURALNETWORK_NEURAL_NETWORK_BASE_H
 #define NEURALNETWORK_NEURAL_NETWORK_BASE_H
 
-#include "Base/neural_network_architecture_data.h"
-#include "Base/neuron.h"
 #include "Base/synapse.h"
 
 #include <map>
 #include <random>
 #include <vector>
 
-/// @brief Base class for defining the neural network architecture
+/// @brief Defines the neural network architecture
 /// @attention Currently, works only with a single hidden layer architecture
 class NeuralNetworkBase {
 public:
@@ -17,7 +15,7 @@ public:
     /// @param size Value representing how many neurons will the input layer have
     void SetNumberOfNeuronsInInputLayer(std::size_t size);
 
-    /// @brief Defines the numbers of neurons in the single hidden layer
+    /// @brief Defines the numbers of neurons in one hidden layer
     /// @param size Value representing how many neurons will the hidden layer have
     void SetNumberOfNeuronsInSingleHiddenLayer(std::size_t size);
 

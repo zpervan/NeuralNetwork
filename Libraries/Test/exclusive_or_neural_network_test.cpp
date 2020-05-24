@@ -24,16 +24,16 @@ protected:
     {
 
         input_layer_.reserve(2);
-        input_layer_.emplace_back(0, 1.0);
-        input_layer_.emplace_back(1, 1.0);
+        input_layer_.emplace_back(Neuron{0, 1.0});
+        input_layer_.emplace_back(Neuron{1, 1.0});
 
         hidden_layer_.reserve(3);
-        hidden_layer_.emplace_back(2, 1.0, 0.73);
-        hidden_layer_.emplace_back(3, 1.3, 0.79);
-        hidden_layer_.emplace_back(4, 0.8, 0.69);
+        hidden_layer_.emplace_back(Neuron{2, 1.0, 0.73});
+        hidden_layer_.emplace_back(Neuron{3, 1.3, 0.79});
+        hidden_layer_.emplace_back(Neuron{4, 0.8, 0.69});
 
         output_layer_.reserve(1);
-        output_layer_.emplace_back(5, 1.2, 0.77);
+        output_layer_.emplace_back(Neuron{5, 1.2, 0.77, 0.0});
 
         // Connect first hidden layer neuron with input layer neurons
         synapses_.emplace(
@@ -80,17 +80,17 @@ protected:
 
     void SetPredefinedNetworkNeuronValuesToZero()
     {
-        hidden_layer_.at(0).SetValue(0);
-        hidden_layer_.at(1).SetValue(0);
-        hidden_layer_.at(2).SetValue(0);
-        output_layer_.at(0).SetValue(0);
+        hidden_layer_.at(0).value = 0;
+        hidden_layer_.at(1).value = 0;
+        hidden_layer_.at(2).value = 0;
+        output_layer_.at(0).value = 0;
     }
 
     void CheckSynapsesChildNeuronValuesIsNotZero(
             const std::multimap<Id, Synapse>& actual_values)
     {
         for (const auto& actual_value : actual_values) {
-            EXPECT_NE(0, actual_value.second.GetChildNeuron()->GetValue())
+            EXPECT_NE(0, actual_value.second.GetChildNeuron()->value)
                             << "Synapse ID: " << actual_value.first
                             << "\n";
         }
@@ -101,7 +101,7 @@ TEST_F(ExclusiveOrNeuralNetworkTestFixture,
         GivenDefinedNeuralNetworkArchitecture_WhenApplyingActivationFunctions_ThenCorrectValueReturned)
 {
     CreateDefaultPredefinedConnectedNetwork();
-    const Value value{hidden_layer_.at(0).GetValue()};
+    const Value value{hidden_layer_.at(0).value};
 
     SetActivationFunctionType(ActivationFunctionType::LINEAR);
 
@@ -137,7 +137,7 @@ TEST_F(ExclusiveOrNeuralNetworkTestFixture,
 
     SetActivationFunctionType(ActivationFunctionType::UNKNOWN);
 
-    EXPECT_THROW(ApplyActivationFunction(hidden_layer_.at(0).GetValue()),
+    EXPECT_THROW(ApplyActivationFunction(hidden_layer_.at(0).value),
             std::invalid_argument);
 }
 
@@ -168,10 +168,10 @@ TEST_F(
     }
 
     const std::array<Value, 4> expected_values{1.0, 1.3, 0.8, 1.235};
-    EXPECT_DOUBLE_EQ(expected_values[0], hidden_layer_[0].GetValue());
-    EXPECT_DOUBLE_EQ(expected_values[1], hidden_layer_[1].GetValue());
-    EXPECT_DOUBLE_EQ(expected_values[2], hidden_layer_[2].GetValue());
-    EXPECT_DOUBLE_EQ(expected_values[3], output_layer_[0].GetValue());
+    EXPECT_DOUBLE_EQ(expected_values[0], hidden_layer_[0].value);
+    EXPECT_DOUBLE_EQ(expected_values[1], hidden_layer_[1].value);
+    EXPECT_DOUBLE_EQ(expected_values[2], hidden_layer_[2].value);
+    EXPECT_DOUBLE_EQ(expected_values[3], output_layer_[0].value);
 }
 
 TEST_F(
@@ -186,19 +186,19 @@ TEST_F(
     // First hidden neuron and it's children in the output layer
     ApplyActivationFunctionOnNeuronsValue(synapses_.find(2));
     EXPECT_NEAR(expected_result[0],
-            hidden_layer_.at(0).GetActivationFunctionResult(), 1e-4);
+            hidden_layer_.at(0).activation_func_result, 1e-4);
     // Second hidden neuron and it's children in the output layer
     ApplyActivationFunctionOnNeuronsValue(synapses_.find(3));
     EXPECT_NEAR(expected_result[1],
-            hidden_layer_.at(1).GetActivationFunctionResult(), 1e-4);
+            hidden_layer_.at(1).activation_func_result, 1e-4);
     // Third hidden neuron and it's children in the output layer
     ApplyActivationFunctionOnNeuronsValue(synapses_.find(4));
     EXPECT_NEAR(expected_result[2],
-            hidden_layer_.at(2).GetActivationFunctionResult(), 1e-4);
+            hidden_layer_.at(2).activation_func_result, 1e-4);
 
     ApplyActivationFunctionOnNeuronsValue(synapses_.find(5));
     EXPECT_NEAR(expected_result[3],
-            output_layer_.at(0).GetActivationFunctionResult(), 1e-4);
+            output_layer_.at(0).activation_func_result, 1e-4);
 }
 
 int main(int argc, char** argv)

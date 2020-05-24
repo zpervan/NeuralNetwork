@@ -1,7 +1,7 @@
 #ifndef NEURALNETWORK_SIMPLE_NEURAL_NETWORK_H
 #define NEURALNETWORK_SIMPLE_NEURAL_NETWORK_H
 
-#include "Base/neural_network_architecture_data.h"
+#include "Base/neural_network_data.h"
 #include "activation_functions.h"
 #include "neural_network_base.h"
 
