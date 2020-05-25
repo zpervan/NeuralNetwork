@@ -100,3 +100,8 @@ void ExclusiveOrNeuralNetwork::SetActivationFunctionType(
 {
 	activation_function_type_ = activation_function_type;
 }
+
+void ExclusiveOrNeuralNetwork::Train()
+{
+
+}
